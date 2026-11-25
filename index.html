@@ -1,0 +1,631 @@
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>درس سورة يس | رحلة الحفظ والفهم والتصحيح</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800&display=swap');
+
+:root {
+  --bg-dark: #0B1920;
+  --bg-mid: #14343F;
+  --gold: #D4AF37;
+  --gold-soft: rgba(212, 175, 55, 0.15);
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.12);
+  --amber: #F59E0B;
+  --amber-soft: rgba(245, 158, 11, 0.10);
+  --text: #F1F5F9;
+  --text-dim: #94A3B8;
+  --card: rgba(255, 255, 255, 0.045);
+  --border: rgba(212, 175, 55, 0.22);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0; padding: 0; min-height: 100vh;
+  font-family: 'Tajawal', sans-serif;
+  background: radial-gradient(circle at 50% -10%, var(--bg-mid), var(--bg-dark) 75%);
+  color: var(--text);
+  display: flex; justify-content: center; align-items: flex-start;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: 
+    linear-gradient(45deg, rgba(212,175,55,0.025) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(212,175,55,0.025) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(212,175,55,0.025) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(212,175,55,0.025) 75%);
+  background-size: 44px 44px;
+  background-position: 0 0, 0 22px, 22px -22px, -22px 0px;
+}
+
+#app {
+  width: 100%; max-width: 760px;
+  padding: 20px 16px 48px;
+  position: relative;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+  gap: 10px; padding: 12px 18px; margin-bottom: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; backdrop-filter: blur(8px);
+  font-size: 0.88rem; font-weight: 700;
+  animation: fadeDown .5s ease;
+}
+#hud .badge { display: inline-flex; align-items: center; gap: 6px; }
+#hud .gold { color: var(--gold); }
+#hud .green { color: var(--emerald); }
+#hud .amber { color: var(--amber); }
+.progress-wrap { width: 100%; height: 5px; background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden; margin-top: 4px; }
+.progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--emerald)); border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+/* ---------- Screens ---------- */
+.screen { display: none; animation: popIn .45s cubic-bezier(.34,1.56,.64,1); }
+.screen.active { display: block; }
+.hidden { display: none !important; }
+
+.hero { text-align: center; padding: 32px 10px 10px; }
+.hero .kaaba { font-size: clamp(3rem, 10vw, 4.5rem); filter: drop-shadow(0 0 18px rgba(212,175,55,.35)); animation: float 4s ease-in-out infinite; }
+.hero h1 { font-family: 'Amiri', serif; font-size: clamp(2.2rem, 7vw, 3.4rem); margin: 10px 0 4px; color: var(--gold); line-height: 1.2; }
+.hero .sub { font-size: 1.05rem; color: var(--text-dim); margin: 0 0 22px; font-weight: 500; }
+.chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.chip { background: var(--gold-soft); border: 1px solid var(--border); color: var(--gold); padding: 6px 14px; border-radius: 99px; font-size: .85rem; font-weight: 700; }
+
+.note-card {
+  background: var(--amber-soft); border-right: 4px solid var(--amber);
+  padding: 16px 18px; border-radius: 12px; margin: 0 auto 28px; max-width: 560px;
+  font-size: .95rem; line-height: 1.8; color: #FDE68A; text-align: right;
+}
+.note-card b { color: #fff; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: 'Tajawal', sans-serif; font-weight: 800; font-size: 1.05rem;
+  padding: 14px 28px; border-radius: 12px; border: none; cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  margin: 6px;
+}
+.btn:active { transform: scale(.96); }
+.btn-primary { background: linear-gradient(135deg, var(--gold), #B59325); color: #10202A; box-shadow: 0 8px 24px rgba(212,175,55,.25); }
+.btn-primary:hover { filter: brightness(1.08); box-shadow: 0 10px 30px rgba(212,175,55,.38); }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--gold); }
+.btn-ghost:hover { background: var(--gold-soft); }
+.btn-next { background: var(--emerald); color: #06251B; box-shadow: 0 6px 20px rgba(16,185,129,.25); }
+.btn-next:hover { filter: brightness(1.1); }
+
+/* ---------- Game Card ---------- */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: clamp(18px, 4vw, 28px);
+  backdrop-filter: blur(12px); box-shadow: 0 14px 40px rgba(0,0,0,.25);
+}
+.card-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tag { background: var(--gold-soft); color: var(--gold); padding: 5px 12px; border-radius: 8px; font-weight: 800; font-size: .85rem; }
+.phase-label { color: var(--text-dim); font-size: .85rem; font-weight: 700; }
+
+.opener {
+  font-family: 'Amiri', serif; font-size: clamp(1.5rem, 5vw, 2.1rem);
+  text-align: center; color: #FFF8E1; line-height: 1.9;
+  padding: 14px; margin: 6px 0 16px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,.07), transparent);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+
+.toggle-text {
+  width: 100%; background: rgba(255,255,255,.03); border: 1px dashed var(--border);
+  color: var(--gold); padding: 11px; border-radius: 10px; cursor: pointer;
+  font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: .92rem;
+  transition: background .2s;
+}
+.toggle-text:hover { background: var(--gold-soft); }
+
+.quran-box {
+  max-height: 0; opacity: 0; overflow: hidden;
+  transition: max-height .6s cubic-bezier(.4,0,.2,1), opacity .4s ease, margin .4s ease, padding .4s ease;
+  background: rgba(4, 14, 20, .55); border-radius: 12px; margin-top: 0; padding: 0 16px;
+  border: 1px solid transparent;
+}
+.quran-box.open {
+  max-height: 420px; opacity: 1; overflow-y: auto; margin-top: 14px; padding: 18px 16px;
+  border-color: var(--border);
+}
+.quran-text {
+  font-family: 'Amiri', serif; font-size: clamp(1.15rem, 3.6vw, 1.45rem);
+  line-height: 2.35; text-align: justify; text-align-last: center; color: #EAF2EF;
+}
+.quran-text .num { color: var(--gold); font-size: .75em; font-family: 'Tajawal', sans-serif; vertical-align: super; }
+.quran-box::-webkit-scrollbar { width: 6px; }
+.quran-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9px; }
+
+.prompt { font-size: 1.1rem; font-weight: 800; margin: 22px 0 14px; color: #fff; }
+.prompt span { color: var(--gold); }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  width: 100%; text-align: right; font-family: 'Tajawal', sans-serif;
+  font-size: .98rem; font-weight: 600; line-height: 1.65;
+  padding: 14px 16px; border-radius: 12px; cursor: pointer;
+  background: rgba(255,255,255,.035); border: 1.5px solid rgba(255,255,255,.09);
+  color: var(--text); transition: all .25s ease;
+  display: flex; align-items: center; gap: 12px;
+}
+.opt:hover:not(.disabled):not(.correct) { border-color: var(--gold); background: var(--gold-soft); transform: translateX(-4px); }
+.opt .bullet { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.07); display: grid; place-items: center; font-size: .8rem; font-weight: 800; color: var(--gold); }
+.opt.correct { background: var(--emerald-soft); border-color: var(--emerald); color: #D1FAE5; animation: glow .6s ease; }
+.opt.correct .bullet { background: var(--emerald); color: #06251B; }
+.opt.wrong { background: var(--amber-soft); border-color: var(--amber); animation: shake .4s ease; }
+.opt.disabled { opacity: .48; cursor: not-allowed; text-decoration: line-through; text-decoration-color: var(--amber); }
+.opt.disabled .bullet { opacity: .5; }
+
+.correction-box {
+  max-height: 0; opacity: 0; overflow: hidden;
+  transition: all .45s cubic-bezier(.4,0,.2,1);
+  background: var(--amber-soft); border-right: 4px solid var(--amber);
+  border-radius: 10px; color: #FDE68A; font-size: .93rem; line-height: 1.8;
+}
+.correction-box.show { max-height: 220px; opacity: 1; margin-top: 14px; padding: 14px 16px; }
+.correction-box b { color: #fff; }
+.aware-pop { display: inline-block; margin-top: 8px; background: rgba(245,158,11,.2); padding: 3px 10px; border-radius: 99px; font-size: .8rem; font-weight: 800; color: var(--amber); animation: popIn .4s ease; }
+
+.next-wrap { text-align: center; margin-top: 20px; min-height: 54px; }
+
+/* ---------- Modal ---------- */
+.modal {
+  position: fixed; inset: 0; z-index: 50; display: none;
+  background: rgba(4, 12, 17, .88); backdrop-filter: blur(6px);
+  padding: 16px; overflow-y: auto;
+}
+.modal.open { display: flex; justify-content: center; align-items: flex-start; animation: fadeDown .3s ease; }
+.modal-inner {
+  background: #102630; border: 1px solid var(--border); border-radius: 18px;
+  width: 100%; max-width: 700px; margin: 20px 0; padding: 22px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; position: sticky; top: -22px; background: #102630; padding: 10px 0; z-index: 2; border-bottom: 1px solid var(--border); }
+.modal-head h2 { font-family: 'Amiri', serif; color: var(--gold); margin: 0; font-size: 1.7rem; }
+.close-btn { background: rgba(255,255,255,.06); border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; line-height: 1; }
+.close-btn:hover { background: rgba(255,255,255,.15); }
+.surah-part { margin-bottom: 26px; }
+.surah-part h3 { color: var(--emerald); font-size: .95rem; margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--border); }
+
+/* ---------- End Screen ---------- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 22px 0; }
+.stat { background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 14px; padding: 16px 10px; text-align: center; }
+.stat .ico { font-size: 1.7rem; display: block; margin-bottom: 6px; }
+.stat .val { font-size: 1.8rem; font-weight: 800; color: var(--gold); display: block; }
+.stat .lbl { font-size: .82rem; color: var(--text-dim); font-weight: 600; }
+.rank { font-family: 'Amiri', serif; font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--emerald); text-align: center; margin: 10px 0; }
+.end-duas { text-align: center; color: #CBD5E1; line-height: 1.9; font-size: .98rem; margin-bottom: 24px; }
+
+/* ---------- Animations ---------- */
+@keyframes popIn { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(3px)} }
+@keyframes glow { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)} 100%{box-shadow:0 0 0 14px rgba(16,185,129,0)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+@media (max-width: 480px) {
+  #app { padding: 14px 12px 36px; }
+  .btn { width: 100%; margin: 5px 0; }
+  .opt { font-size: .92rem; padding: 12px; }
+  .quran-box.open { max-height: 320px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- HUD -->
+  <header id="hud" class="hidden">
+    <div class="badge gold" id="hud-phase">🧩 مرحلة التصحيح</div>
+    <div class="badge" id="hud-step">الشطر ١ / ٦</div>
+    <div class="badge green" id="hud-first">🎯 من النظرة الأولى: ٠</div>
+    <div class="badge amber" id="hud-aware">💡 نقاط الوعي: ٠</div>
+    <div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
+  </header>
+
+  <!-- START -->
+  <main id="screen-start" class="screen active">
+    <div class="hero">
+      <div class="kaaba">🕋</div>
+      <h1>درس سورة يس</h1>
+      <p class="sub">من الآية ١ إلى ٨٣ • مقسّمة إلى ٦ أشطر للحفظ والتدبّر</p>
+      <div class="chips">
+        <span class="chip">📖 حفظ</span>
+        <span class="chip">🧠 فهم</span>
+        <span class="chip">⚖️ استنباط القيم</span>
+        <span class="chip">🧪 اختبار</span>
+      </div>
+      <div class="note-card">
+        ✨ <b>منهجية اللعبة:</b> الإجابة الخاطئة هنا <b>لا تُخصم من رصيدك</b>.. بل تمنحك «نقطة وعي» 💡 ويظهر لك تصحيحٌ ذكي يربطك بموضع الآية الصحيح، ثم يعيدك لتكتشف الصواب بنفسك. نتعلّم من الخطأ قبل الصواب 🌱
+      </div>
+      <button class="btn btn-primary" onclick="startGame()">ابدأ الرحلة ✨</button>
+      <button class="btn btn-ghost" onclick="openSurah()">📖 تصفّح السورة كاملة (٨٣ آية)</button>
+    </div>
+  </main>
+
+  <!-- LEARN -->
+  <main id="screen-learn" class="screen">
+    <div class="card">
+      <div class="card-head">
+        <span class="tag" id="learn-tag">الشطر ١ • الآيات 1 - 12</span>
+        <span class="phase-label">🧩 اختر الفهم والقيمة المستنبطة</span>
+      </div>
+      <div class="opener" id="learn-opener"></div>
+      <button class="toggle-text" id="btn-toggle" onclick="toggleText()">🔍 اضغط لقراءة الشطر كاملاً (للحفظ)</button>
+      <div class="quran-box" id="quran-box"><div class="quran-text" id="learn-text"></div></div>
+      <p class="prompt">ما <span>المعنى والحكم / القيمة</span> المستنبطة من هذا الشطر؟</p>
+      <div class="options" id="learn-options"></div>
+      <div class="correction-box" id="learn-correction"></div>
+      <div class="next-wrap" id="learn-next"></div>
+    </div>
+  </main>
+
+  <!-- QUIZ -->
+  <main id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="card-head">
+        <span class="tag" style="background:var(--emerald-soft);color:var(--emerald);" id="quiz-tag">السؤال ١ / ٥</span>
+        <span class="phase-label">🧪 اختبار المعلومات والربط بين الأشطر</span>
+      </div>
+      <p class="prompt" id="quiz-q" style="font-family:'Amiri',serif;font-size:1.35rem;line-height:1.9;"></p>
+      <div class="options" id="quiz-options"></div>
+      <div class="correction-box" id="quiz-correction"></div>
+      <div class="next-wrap" id="quiz-next"></div>
+    </div>
+  </main>
+
+  <!-- END -->
+  <main id="screen-end" class="screen">
+    <div class="hero" style="padding-top:18px;">
+      <div class="kaaba" style="font-size:3.4rem;">🌙</div>
+      <h1 style="font-size:2.2rem;">ختمتَ السورة</h1>
+      <p class="sub">من «يٰسٓ» إلى «وَإِلَيْهِ تُرْجَعُونَ»</p>
+      <div class="rank" id="end-rank"></div>
+      <div class="stats">
+        <div class="stat"><span class="ico">🎯</span><span class="val" id="stat-first">0</span><span class="lbl">إجابة من النظرة الأولى</span></div>
+        <div class="stat"><span class="ico">💡</span><span class="val" id="stat-aware" style="color:var(--amber);">0</span><span class="lbl">نقطة وعي من التصحيح</span></div>
+        <div class="stat"><span class="ico">📜</span><span class="val" style="color:var(--emerald);">٦</span><span class="lbl">أشطر أتقنتها</span></div>
+      </div>
+      <p class="end-duas" id="end-msg"></p>
+      <button class="btn btn-primary" onclick="resetGame()">🔄 أعد الرحلة</button>
+      <button class="btn btn-ghost" onclick="openSurah()">📖 تصفّح السورة كاملة</button>
+    </div>
+  </main>
+
+  <!-- FULL SURAH MODAL -->
+  <div class="modal" id="modal-surah" onclick="if(event.target===this) closeSurah()">
+    <div class="modal-inner">
+      <div class="modal-head">
+        <h2>سورة يس كاملة 🕋</h2>
+        <button class="close-btn" onclick="closeSurah()">×</button>
+      </div>
+      <div id="surah-full-content"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   البيانات: سورة يس (1-83) كاملة، مقسّمة إلى 6 أشطر
+   ============================================================ */
+const sections = [
+  {
+    range: "1 - 12",
+    opener: "يٰسٓ ۝ وَالْقُرْآنِ الْحَكِيمِ",
+    text: `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>يٰسٓ <span class="num">(1)</span> وَالْقُرْآنِ الْحَكِيمِ <span class="num">(2)</span> إِنَّكَ لَمِنَ الْمُرْسَلِينَ <span class="num">(3)</span> عَلَىٰ صِرَاطٍ مُّسْتَقِيمٍ <span class="num">(4)</span> تَنزِيلَ الْعَزِيزِ الرَّحِيمِ <span class="num">(5)</span> لِتُنذِرَ قَوْمًا مَّا أُنذِرَ آبَاؤُهُمْ فَهُمْ غَافِلُونَ <span class="num">(6)</span> لَقَدْ حَقَّ الْقَوْلُ عَلَىٰ أَكْثَرِهِمْ فَهُمْ لَا يُؤْمِنُونَ <span class="num">(7)</span> إِنَّا جَعَلْنَا فِي أَعْنَاقِهِمْ أَغْلَالًا فَهِيَ إِلَى الْأَذْقَانِ فَهُم مُّقْمَحُونَ <span class="num">(8)</span> وَجَعَلْنَا مِن بَيْنِ أَيْدِيهِمْ سَدًّا وَمِنْ خَلْفِهِمْ سَدًّا فَأَغْشَيْنَاهُمْ فَهُمْ لَا يُبْصِرُونَ <span class="num">(9)</span> وَسَوَاءٌ عَلَيْهِمْ أَأَنذَرْتَهُمْ أَمْ لَم تُنذِرْهُمْ لَا يُؤْمِنُونَ <span class="num">(10)</span> إِنَّمَا تُنذِرُ مَنِ اتَّبَعَ الذِّكْرَ وَخَشِيَ الرَّحْمَٰنَ بِالْغَيْبِ ۖ فَبَشِّرْهُ بِمَغْفِرَةٍ وَأَجْرٍ كَرِيمٍ <span class="num">(11)</span> إِنَّا نَحْنُ نُحْيِي الْمَوْتَىٰ وَنَكْتُبُ مَا قَدَّمُوا وَآثَارَهُمْ ۚ وَكُلَّ شَيْءٍ أَحْصَيْنَاهُ فِي إِمَامٍ مُّبِينٍ <span class="num">(12)</span>`,
+    correct: "تثبيت الرسالة والإنذار، وأن الانتفاع لمن يخشى الغيب، مع تسجيل الأعمال والآثار استعداداً للبعث",
+    distractors: [
+      { t: "قصة المؤمن الذي جاء من أقصى المدينة يسعى", f: "💡 <b>تصحيح:</b> هذه القصة في <b>الشطر الثاني (13-27)</b>. شطرنا الآن يفتتح السورة ويُثبت أن الإنذار ينتفع به من يخشى الرحمن بالغيب (الآية 11). جرّب مجدداً 🌱" },
+      { t: "الاستدلال على البعث بالنار من الشجر الأخضر", f: "💡 <b>تصحيح:</b> هذا الاستدلال خُتمت به السورة في <b>الشطر السادس (77-83)</b>. هنا نقرأ (وَنَكْتُبُ مَا قَدَّمُوا وَآثَارَهُمْ). انتبه لتسلسل الآيات ✨" }
+    ]
+  },
+  {
+    range: "13 - 27",
+    opener: "وَاضْرِبْ لَهُم مَّثَلًا أَصْحَابَ الْقَرْيَةِ",
+    text: `وَاضْرِبْ لَهُم مَّثَلًا أَصْحَابَ الْقَرْيَةِ إِذْ جَاءَهَا الْمُرْسَلُونَ <span class="num">(13)</span> إِذْ أَرْسَلْنَا إِلَيْهِمُ اثْنَيْنِ فَكَذَّبُوهُمَا فَعَزَّزْنَا بِثَالِثٍ فَقَالُوا إِنَّا إِلَيْكُم مُّرْسَلُونَ <span class="num">(14)</span> قَالُوا مَا أَنتُمْ إِلَّا بَشَرٌ مِّثْلُنَا وَمَا أَنزَلَ الرَّحْمَٰنُ مِن شَيْءٍ إِنْ أَنتُمْ إِلَّا تَكْذِبُونَ <span class="num">(15)</span> قَالُوا رَبُّنَا يَعْلَمُ إِنَّا إِلَيْكُمْ لَمُرْسَلُونَ <span class="num">(16)</span> وَمَا عَلَيْنَا إِلَّا الْبَلَاغُ الْمُبِينُ <span class="num">(17)</span> قَالُوا إِنَّا تَطَيَّرْنَا بِكُمْ ۖ لَئِن لَّمْ تَنتَهُوا لَنَرْجُمَنَّكُمْ وَلَيَمَسَّنَّكُم مِّنَّا عَذَابٌ أَلِيمٌ <span class="num">(18)</span> قَالُوا طَائِرُكُم مَّعَكُمْ ۚ أَئِن ذُكِّرْتُم ۚ بَلْ أَنتُمْ قَوْمٌ مُّسْرِفُونَ <span class="num">(19)</span> وَجَاءَ مِنْ أَقْصَى الْمَدِينَةِ رَجُلٌ يَسْعَىٰ قَالَ يَا قَوْمِ اتَّبِعُوا الْمُرْسَلِينَ <span class="num">(20)</span> اتَّبِعُوا مَن لَّا يَسْأَلُكُمْ أَجْرًا وَهُم مُّهْتَدُونَ <span class="num">(21)</span> وَمَا لِيَ لَا أَعْبُدُ الَّذِي فَطَرَنِي وَإِلَيْهِ تُرْجَعُونَ <span class="num">(22)</span> أَأَتَّخِذُ مِن دُونِهِ آلِهَةً إِن يُرِدْنِ الرَّحْمَٰنُ بِضُرٍّ لَا تُغْنِ عَنِّي شَفَاعَتُهُمْ شَيْئًا وَلَا يُنقِذُونِ <span class="num">(23)</span> إِنِّي إِذًا لَفِي ضَلَالٍ مُّبِينٍ <span class="num">(24)</span> إِنِّي آمَنتُ بِرَبِّكُمْ فَاسْمَعُونِ <span class="num">(25)</span> قِيلَ ادْخُلِ الْجَنَّةَ ۖ قَالَ يَا لَيْتَ قَوْمِي يَعْلَمُونَ <span class="num">(26)</span> بِمَا غَفَرَ لِي رَبِّي وَجَعَلَنِي مِنَ الْمُكْرَمِينَ <span class="num">(27)</span>`,
+    correct: "الإخلاص في الدعوة بلا أجر (البلاغ المبين)، وحرص المؤمن على هداية قومه حتى بعد دخوله الجنة",
+    distractors: [
+      { t: "ختم الأفواه وشهادة الأيدي والأرجل يوم الحساب", f: "💡 <b>تصحيح:</b> هذا مشهد يوم القيامة في <b>الشطر الرابع (الآية 65)</b>. نحن الآن في مثل القرية، والرجل يقول (يَا لَيْتَ قَوْمِي يَعْلَمُونَ). لاحظ حرصه على قومه 💚" },
+      { t: "الاستدلال بجريان الشمس والقمر في أفلاكهما", f: "💡 <b>تصحيح:</b> الآيات الكونية (الشمس/القمر/الفلك) في <b>الشطر الثالث (37-42)</b>. شطرنا يعلّمنا أدب المبلّغ: (وَمَا عَلَيْنَا إِلَّا الْبَلَاغُ الْمُبِينُ) 📩" }
+    ]
+  },
+  {
+    range: "28 - 50",
+    opener: "وَآيَةٌ لَّهُمُ الْأَرْضُ الْمَيْتَةُ أَحْيَيْنَاهَا",
+    text: `وَمَا أَنزَلْنَا عَلَىٰ قَوْمِهِ مِن بَعْدِهِ مِن جُندٍ مِّنَ السَّمَاءِ وَمَا كُنَّا مُنزِلِينَ <span class="num">(28)</span> إِن كَانَتْ إِلَّا صَيْحَةً وَاحِدَةً فَإِذَا هُمْ خَامِدُونَ <span class="num">(29)</span> يَا حَسْرَةً عَلَى الْعِبَادِ ۚ مَا يَأْتِيهِم مِّن رَّسُولٍ إِلَّا كَانُوا بِهِ يَسْتَهْزِئُونَ <span class="num">(30)</span> أَلَمْ يَرَوْا كَمْ أَهْلَكْنَا قَبْلَهُم مِّنَ الْقُرُونِ أَنَّهُمْ إِلَيْهِمْ لَا يَرْجِعُونَ <span class="num">(31)</span> وَإِن كُلٌّ لَّمَّا جَمِيعٌ لَّدَيْنَا مُحْضَرُونَ <span class="num">(32)</span> وَآيَةٌ لَّهُمُ الْأَرْضُ الْمَيْتَةُ أَحْيَيْنَاهَا وَأَخْرَجْنَا مِنْهَا حَبًّا فَمِنْهُ يَأْكُلُونَ <span class="num">(33)</span> وَجَعَلْنَا فِيهَا جَنَّاتٍ مِّن نَّخِيلٍ وَأَعْنَابٍ وَفَجَّرْنَا فِيهَا مِنَ الْعُيُونِ <span class="num">(34)</span> لِيَأْكُلُوا مِن ثَمَرِهِ وَمَا عَمِلَتْهُ أَيْدِيهِمْ ۖ أَفَلَا يَشْكُرُونَ <span class="num">(35)</span> سُبْحَانَ الَّذِي خَلَقَ الْأَزْوَاجَ كُلَّهَا مِمَّا تُنبِتُ الْأَرْضُ وَمِنْ أَنفُسِهِمْ وَمِمَّا لَا يَعْلَمُونَ <span class="num">(36)</span> وَآيَةٌ لَّهُمُ اللَّيْلُ نَسْلَخُ مِنْهُ النَّهَارَ فَإِذَا هُم مُّظْلِمُونَ <span class="num">(37)</span> وَالشَّمْسُ تَجْرِي لِمُسْتَقَرٍّ لَّهَا ۚ ذَٰلِكَ تَقْدِيرُ الْعَزِيزِ الْعَلِيمِ <span class="num">(38)</span> وَالْقَمَرَ قَدَّرْنَاهُ مَنَازِلَ حَتَّىٰ عَادَ كَالْعُرْجُونِ الْقَدِيمِ <span class="num">(39)</span> لَا الشَّمْسُ يَنبَغِي لَهَا أَن تُدْرِكَ الْقَمَرَ وَلَا اللَّيْلُ سَابِقُ النَّهَارِ ۚ وَكُلٌّ فِي فَلَكٍ يَسْبَحُونَ <span class="num">(40)</span> وَآيَةٌ لَّهُمْ أَنَّا حَمَلْنَا ذُرِّيَّتَهُمْ فِي الْفُلْكِ الْمَشْحُونِ <span class="num">(41)</span> وَخَلَقْنَا لَهُم مِّن مِّثْلِهِ مَا يَرْكَبُونَ <span class="num">(42)</span> وَإِن نَّشَأْ نُغْرِقْهُمْ فَلَا صَرِيخَ لَهُمْ وَلَا هُم يُنقَذُونَ <span class="num">(43)</span> إِلَّا رَحْمَةً مِّنَّا وَمَتَاعًا إِلَىٰ حِينٍ <span class="num">(44)</span> وَإِذَا قِيلَ لَهُمُ اتَّقُوا مَا بَيْنَ أَيْدِيكُمْ وَمَا خَلْفَكُمْ لَعَلَّكُمْ تُرْحَمُونَ <span class="num">(45)</span> وَمَا تَأْتِيهِم مِّنْ آيَةٍ مِّنْ آيَاتِ رَبِّهِمْ إِلَّا كَانُوا عَنْهَا مُعْرِضِينَ <span class="num">(46)</span> وَإِذَا قِيلَ لَهُمْ أَنفِقُوا مِمَّا رَزَقَكُمُ اللَّهُ قَالَ الَّذِينَ كَفَرُوا لِلَّذِينَ آمَنُوا أَنُطْعِمُ مَن لَّوْ يَشَاءُ اللَّهُ أَطْعَمَهُ ۖ إِنْ أَنتُمْ إِلَّا فِي ضَلَالٍ مُّبِينٍ <span class="num">(47)</span> وَيَقُولُونَ مَتَىٰ هَٰذَا الْوَعْدُ إِن كُنتُمْ صَادِقِينَ <span class="num">(48)</span> مَا يَنظُرُونَ إِلَّا صَيْحَةً وَاحِدَةً تَأْخُذُهُمْ وَهُمْ يَخِصِّمُونَ <span class="num">(49)</span> فَلَا يَسْتَطِيعُونَ تَوْصِيَةً وَلَا إِلَىٰ أَهْلِهِمْ يَرْجِعُونَ <span class="num">(50)</span>`,
+    correct: "التفكّر في آيات الكون (الأرض، الليل، الفلك) كدليل على البعث، مع ذمّ الإعراض والاستهزاء بالرسل",
+    distractors: [
+      { t: "نعيم أصحاب الجنة وقوله (سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ)", f: "💡 <b>تصحيح:</b> نعيم الجنة ورد في <b>الشطر الرابع (55-58)</b>. هذا الشطر يعرض آيات القدرة <b>قبل</b> الصيحة، مثل (وَآيَةٌ لَّهُمُ الْأَرْضُ الْمَيْتَةُ) 🌾" },
+      { t: "تنزيه النبي ﷺ عن الشعر ووصف القرآن بالمبين", f: "💡 <b>تصحيح:</b> (وَمَا عَلَّمْنَاهُ الشِّعْرَ) في <b>الشطر الخامس (الآية 69)</b>. هنا نتأمل قوله (وَكُلٌّ فِي فَلَكٍ يَسْبَحُونَ) 🌙" }
+    ]
+  },
+  {
+    range: "51 - 67",
+    opener: "وَنُفِخَ فِي الصُّورِ فَإِذَا هُم يَنسِلُونَ",
+    text: `وَنُفِخَ فِي الصُّورِ فَإِذَا هُم مِّنَ الْأَجْدَاثِ إِلَىٰ رَبِّهِمْ يَنسِلُونَ <span class="num">(51)</span> قَالُوا يَا وَيْلَنَا مَن بَعَثَنَا مِن مَّرْقَدِنَا ۜ هَٰذَا مَا وَعَدَ الرَّحْمَٰنُ وَصَدَقَ الْمُرْسَلُونَ <span class="num">(52)</span> إِن كَانَتْ إِلَّا صَيْحَةً وَاحِدَةً فَإِذَا هُمْ جَمِيعٌ لَّدَيْنَا مُحْضَرُونَ <span class="num">(53)</span> فَالْيَوْمَ لَا تُظْلَمُ نَفْسٌ شَيْئًا وَلَا تُجْزَوْنَ إِلَّا مَا كُنتُمْ تَعْمَلُونَ <span class="num">(54)</span> إِنَّ أَصْحَابَ الْجَنَّةِ الْيَوْمَ فِي شُغُلٍ فَاكِهُونَ <span class="num">(55)</span> هُمْ وَأَزْوَاجُهُمْ فِي ظِلَالٍ عَلَى الْأَرَائِكِ مُتَّكِئُونَ <span class="num">(56)</span> لَهُمْ فِيهَا فَاكِهَةٌ وَلَهُم مَّا يَدَّعُونَ <span class="num">(57)</span> سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ <span class="num">(58)</span> وَامْتَازُوا الْيَوْمَ أَيُّهَا الْمُجْرِمُونَ <span class="num">(59)</span> أَلَمْ أَعْهَدْ إِلَيْكُمْ يَا بَنِي آدَمَ أَن لَّا تَعْبُدُوا الشَّيْطَانَ ۖ إِنَّهُ لَكُمْ عَدُوٌّ مُّبِينٌ <span class="num">(60)</span> وَأَنِ اعْبُدُونِي ۚ هَٰذَا صِرَاطٌ مُّسْتَقِيمٌ <span class="num">(61)</span> وَلَقَدْ أَضَلَّ مِنكُمْ جِبِلًّا كَثِيرًا ۖ أَفَلَمْ تَكُونُوا تَعْقِلُونَ <span class="num">(62)</span> هَٰذِهِ جَهَنَّمُ الَّتِي كُنتُمْ تُوعَدُونَ <span class="num">(63)</span> اصْلَوْهَا الْيَوْمَ بِمَا كُنتُمْ تَكْفُرُونَ <span class="num">(64)</span> الْيَوْمَ نَخْتِمُ عَلَىٰ أَفْوَاهِهِمْ وَتُكَلِّمُنَا أَيْدِيهِمْ وَتَشْهَدُ أَرْجُلُهُم بِمَا كَانُوا يَكْسِبُونَ <span class="num">(65)</span> وَلَوْ نَشَاءُ لَطَمَسْنَا عَلَىٰ أَعْيُنِهِمْ فَاسْتَبَقُوا الصِّرَاطَ فَأَنَّىٰ يُبْصِرُونَ <span class="num">(66)</span> وَلَوْ نَشَاءُ لَمَسَخْنَاهُمْ عَلَىٰ مَكَانَتِهِمْ فَمَا اسْتَطَاعُوا مُضِيًّا وَلَا يَرْجِعُونَ <span class="num">(67)</span>`,
+    correct: "عدل الله المطلق يوم البعث، والتحذير من عبادة الشيطان، وثبوت الحجّة بشهادة الجوارح",
+    distractors: [
+      { t: "الصيحة الواحدة التي أخذت قوم القرية فخمدوا", f: "💡 <b>تصحيح:</b> صيحة <b>الإهلاك الدنيوي</b> كانت في <b>الشطر الثالث (الآية 29)</b>. أمّا صيحة الشطر الرابع فهي <b>نفخة البعث والإحياء</b> (يَنسِلُونَ). فرّق بين الإهلاك والإحياء 🎺" },
+      { t: "تذليل الأنعام لنا لنركب ونأكل منها", f: "💡 <b>تصحيح:</b> الأنعام ذُكرت في <b>الشطر الخامس (71-73)</b>. الشطر الرابع يحدثنا عن (امْتَازُوا الْيَوْمَ أَيُّهَا الْمُجْرِمُونَ) ⚖️" }
+    ]
+  },
+  {
+    range: "68 - 76",
+    opener: "وَمَا عَلَّمْنَاهُ الشِّعْرَ وَمَا يَنبَغِي لَهُ",
+    text: `وَمَن نُّعَمِّرْهُ نُنَكِّسْهُ فِي الْخَلْقِ ۖ أَفَلَا يَعْقِلُونَ <span class="num">(68)</span> وَمَا عَلَّمْنَاهُ الشِّعْرَ وَمَا يَنبَغِي لَهُ ۖ إِنْ هُوَ إِلَّا ذِكْرٌ وَقُرْآنٌ مُّبِينٌ <span class="num">(69)</span> لِّيُنذِرَ مَن كَانَ حَيًّا وَيَحِقَّ الْقَوْلُ عَلَى الْكَافِرِينَ <span class="num">(70)</span> أَوَلَمْ يَرَوْا أَنَّا خَلَقْنَا لَهُم مِّمَّا عَمِلَتْ أَيْدِينَا أَنْعَامًا فَهُمْ لَهَا مَالِكُونَ <span class="num">(71)</span> وَذَلَّلْنَاهَا لَهُمْ فَمِنْهَا رَكُوبُهُمْ وَمِنْهَا يَأْكُلُونَ <span class="num">(72)</span> وَلَهُمْ فِيهَا مَنَافِعُ وَمَشَارِبُ ۖ أَفَلَا يَشْكُرُونَ <span class="num">(73)</span> وَاتَّخَذُوا مِن دُونِ اللَّهِ آلِهَةً لَعَلَّهُمْ يُنصَرُونَ <span class="num">(74)</span> لَا يَسْتَطِيعُونَ نَصْرَهُمْ وَهُمْ لَهُمْ جُندٌ مُّحْضَرُونَ <span class="num">(75)</span> فَلَا يَحْزُنكَ قَوْلُهُمْ ۘ إِنَّا نَعْلَمُ مَا يُسِرُّونَ وَمَا يُعْلِنُونَ <span class="num">(76)</span>`,
+    correct: "تنزيه الوحي عن الشعر، والتذكير بنعمة الأنعام المذلّلة، وتسلية النبي ﷺ أمام قول الكفار",
+    distractors: [
+      { t: "الأغلال في الأعناق والسدّ بين الأيدي ومن خلفهم", f: "💡 <b>تصحيح:</b> الأغلال والسدّ ذُكرا في <b>الشطر الأول (8-9)</b> كتمثيل لإعراضهم. هنا نقرأ (فَلَا يَحْزُنكَ قَوْلُهُمْ) تسليةً للنبي ﷺ 🤲" },
+      { t: "الأمر الإلهي الجامع (كُن فَيَكُونُ)", f: "💡 <b>تصحيح:</b> الخاتمة العظيمة (كُن فَيَكُونُ) في <b>الشطر السادس (الآية 82)</b>. شطرنا يختم بـ (إِنَّا نَعْلَمُ مَا يُسِرُّونَ وَمَا يُعْلِنُونَ) 👁️" }
+    ]
+  },
+  {
+    range: "77 - 83",
+    opener: "قَالَ مَن يُحْيِي الْعِظَامَ وَهِيَ رَمِيمٌ",
+    text: `أَوَلَمْ يَرَ الْإِنسَانُ أَنَّا خَلَقْنَاهُ مِن نُّطْفَةٍ فَإِذَا هُوَ خَصِيمٌ مُّبِينٌ <span class="num">(77)</span> وَضَرَبَ لَنَا مَثَلًا وَنَسِيَ خَلْقَهُ ۖ قَالَ مَن يُحْيِي الْعِظَامَ وَهِيَ رَمِيمٌ <span class="num">(78)</span> قُلْ يُحْيِيهَا الَّذِي أَنشَأَهَا أَوَّلَ مَرَّةٍ ۖ وَهُوَ بِكُلِّ خَلْقٍ عَلِيمٌ <span class="num">(79)</span> الَّذِي جَعَلَ لَكُم مِّنَ الشَّجَرِ الْأَخْضَرِ نَارًا فَإِذَا أَنتُم مِّنْهُ تُوقِدُونَ <span class="num">(80)</span> أَوَلَيْسَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ بِقَادِرٍ عَلَىٰ أَن يَخْلُقَ مِثْلَهُم ۚ بَلَىٰ وَهُوَ الْخَلَّاقُ الْعَلِيمُ <span class="num">(81)</span> إِنَّمَا أَمْرُهُ إِذَا أَرَادَ شَيْئًا أَن يَقُولَ لَهُ كُن فَيَكُونُ <span class="num">(82)</span> فَسُبْحَانَ الَّذِي بِيَدِهِ مَلَكُوتُ كُلِّ شَيْءٍ وَإِلَيْهِ تُرْجَعُونَ <span class="num">(83)</span>`,
+    correct: "إثبات البعث بالاستدلال بالنشأة الأولى وبإخراج الضدّ (النار من الشجر)، وختام التوحيد بـ (كُن فيكون)",
+    distractors: [
+      { t: "اتّباع المرسلين الذين لا يسألون الناس أجراً", f: "💡 <b>تصحيح:</b> هذه نصيحة مؤمن آل يس في <b>الشطر الثاني (الآية 21)</b>. نحن الآن أمام سؤال الكافر (مَن يُحْيِي الْعِظَامَ) 🦴" },
+      { t: "قولهم (أَنُطْعِمُ مَن لَّوْ يَشَاءُ اللَّهُ أَطْعَمَهُ)", f: "💡 <b>تصحيح:</b> هذا جدال المنكرين للإنفاق في <b>الشطر الثالث (الآية 47)</b>. الخاتمة هنا تردّ على منكري <b>البعث</b> لا على منكري الرزق 🔥🌿" }
+    ]
+  }
+];
+
+const quiz = [
+  {
+    q: "في الشطر الأول قرأنا «وَنَكْتُبُ مَا قَدَّمُوا وَآثَارَهُمْ».. أين تظهر ثمرة هذا التسجيل؟",
+    opts: [
+      { t: "في الشطر الرابع: تُختم الأفواه وتُكلّمنا الأيدي وتشهد الأرجل", ok: true },
+      { t: "في الشطر الثالث: عند إخراج الحبّ من الأرض الميتة", f: "💡 <b>تصحيح:</b> إخراج الحبّ آيةٌ على القدرة (الشطر 3)، أمّا <b>شهادة الأعمال</b> فجاءت صريحة في الآية 65 (الشطر 4). اربط بين الكتابة والشهادة ✍️" },
+      { t: "في الشطر الثاني: عند قوله (يَا لَيْتَ قَوْمِي يَعْلَمُونَ)", f: "💡 <b>تصحيح:</b> ذاك تمنّي المؤمن لقومه (الشطر 2). ابحث عن مشهد <b>الحساب</b> في الشطر الرابع ⚖️" }
+    ]
+  },
+  {
+    q: "مَن صاحب القولة: «يَا لَيْتَ قَوْمِي يَعْلَمُونَ»؟",
+    opts: [
+      { t: "الرجل الذي جاء من أقصى المدينة يسعى (الشطر 2)", ok: true },
+      { t: "أصحاب الجنة وهم على الأرائك متكئون", f: "💡 <b>تصحيح:</b> أصحاب الجنة في (الشطر 4) يسمعون (سَلَامٌ..). القائل هو <b>المؤمن الناصح</b> بعدما قيل له ادخل الجنة 💚" },
+      { t: "النبي ﷺ عند نزول (يٰسٓ)", f: "💡 <b>تصحيح:</b> النبي ﷺ هو المُنذِر في الشطر 1. القائل هنا هو صاحب المثل في القرية 🏃‍♂️" }
+    ]
+  },
+  {
+    q: "سأل الكافر: «مَن يُحْيِي الْعِظَامَ وَهِيَ رَمِيمٌ».. بأيّ آية حسيّة جاءه الردّ في نفس الشطر؟",
+    opts: [
+      { t: "«الَّذِي جَعَلَ لَكُم مِّنَ الشَّجَرِ الْأَخْضَرِ نَارًا»", ok: true },
+      { t: "«وَالشَّمْسُ تَجْرِي لِمُسْتَقَرٍّ لَّهَا»", f: "💡 <b>تصحيح:</b> الشمس في <b>الشطر الثالث</b>. الردّ على العظام جاء بإخراج النار من <b>الرطب الأخضر</b> (ضدّ من ضدّ) في الشطر 6 🌿🔥" },
+      { t: "«أَنَّا حَمَلْنَا ذُرِّيَّتَهُمْ فِي الْفُلْكِ»", f: "💡 <b>تصحيح:</b> الفلك أيضاً من آيات <b>الشطر الثالث</b>. تأمّل الآية 80 مباشرة بعد السؤال 👇" }
+    ]
+  },
+  {
+    q: "ما الأدب والحكم المستنبط من «وَمَا عَلَّمْنَاهُ الشِّعْرَ وَمَا يَنبَغِي لَهُ»؟",
+    opts: [
+      { t: "تنزيه الوحي عن الشعر، وأنه ذِكرٌ يُنذِر حيّ القلب", ok: true },
+      { t: "استحباب إنشاد الشعر في مجالس التذكير", f: "💡 <b>تصحيح:</b> الآية <b>تنفي</b> الشعر عن النبي ﷺ وتصف كتابه بـ (قُرْآنٌ مُّبِينٌ). اختر التنزيه 📜" },
+      { t: "أنّ إعجاز القرآن في نظمه الشعري", f: "💡 <b>تصحيح:</b> الإعجاز في أنه <b>وحيٌ ليس بشعر</b> ولا بقول بشر. لاحظ (إِنْ هُوَ إِلَّا ذِكْرٌ) ✨" }
+    ]
+  },
+  {
+    q: "بمَ خُتمت السورة (الآية 83) بعد الأمر «كُن فَيَكُونُ»؟",
+    opts: [
+      { t: "«فَسُبْحَانَ الَّذِي بِيَدِهِ مَلَكُوتُ كُلِّ شَيْءٍ وَإِلَيْهِ تُرْجَعُونَ»", ok: true },
+      { t: "«سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ»", f: "💡 <b>تصحيح:</b> هذا تحية أهل الجنة في <b>الشطر الرابع (58)</b>. الخاتمة تُسبّح صاحب الملكوت وتُذكّر بالمرجع 🕋" },
+      { t: "«وَكُلَّ شَيْءٍ أَحْصَيْنَاهُ فِي إِمَامٍ مُّبِينٍ»", f: "💡 <b>تصحيح:</b> هذه الآية 12 في <b>الشطر الأول</b>. اختر التسبيح الجامع في آخر آية 🌙" }
+    ]
+  }
+];
+
+/* ============================================================
+   محرك اللعبة
+   ============================================================ */
+let audioCtx = null;
+let state = { phase: 'learn', idx: 0, aware: 0, firstTry: 0, mistakesHere: 0, locked: false };
+
+const $ = id => document.getElementById(id);
+const arNum = n => ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١'][n] || n;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function sfx(type) {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const map = {
+    click: [[420,0,.05]],
+    wrong: [[230,0,.14],[185,.11,.20]],
+    correct: [[523,0,.12],[659,.10,.12],[784,.20,.26]],
+    win: [[392,0,.16],[523,.15,.16],[659,.30,.16],[784,.45,.45]]
+  };
+  (map[type] || map.click).forEach(([f,d,dur]) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t+d);
+    g.gain.linearRampToValueAtTime(.09, t+d+.02);
+    g.gain.exponentialRampToValueAtTime(.001, t+d+dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(t+d); o.stop(t+d+dur);
+  });
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateHUD() {
+  const isLearn = state.phase === 'learn';
+  const total = isLearn ? sections.length : quiz.length;
+  const cur = state.idx + 1;
+  $('hud-phase').innerHTML = isLearn ? '🧩 مرحلة التصحيح' : '🧪 اختبار المعلومات';
+  $('hud-step').textContent = isLearn ? `الشطر ${arNum(cur)} / ٦` : `السؤال ${arNum(cur)} / ٥`;
+  $('hud-first').textContent = `🎯 من النظرة الأولى: ${arNum(state.firstTry)}`;
+  $('hud-aware').textContent = `💡 نقاط الوعي: ${arNum(state.aware)}`;
+  const done = isLearn ? state.idx : sections.length + state.idx;
+  $('progress').style.width = `${(done / (sections.length + quiz.length)) * 100}%`;
+}
+
+function startGame() {
+  initAudio(); sfx('click');
+  state = { phase:'learn', idx:0, aware:0, firstTry:0, mistakesHere:0, locked:false };
+  $('hud').classList.remove('hidden');
+  switchScreen('screen-learn');
+  renderLearn();
+}
+
+function toggleText() {
+  initAudio(); sfx('click');
+  const box = $('quran-box');
+  box.classList.toggle('open');
+  $('btn-toggle').innerHTML = box.classList.contains('open')
+    ? '🔼 إخفاء نص الشطر' : '🔍 اضغط لقراءة الشطر كاملاً (للحفظ)';
+}
+
+function buildOptions(containerId, items, correctionId, nextId, onDone) {
+  const cont = $(containerId);
+  cont.innerHTML = '';
+  $(correctionId).className = 'correction-box';
+  $(correctionId).innerHTML = '';
+  $(nextId).innerHTML = '';
+  state.locked = false;
+  state.mistakesHere = 0;
+
+  items.forEach((item, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="bullet">${['أ','ب','ج'][i]}</span><span>${item.t}</span>`;
+    btn.onclick = () => {
+      if (state.locked || btn.classList.contains('disabled')) return;
+      initAudio();
+      if (item.ok) {
+        state.locked = true;
+        btn.classList.add('correct');
+        btn.querySelector('.bullet').textContent = '✓';
+        sfx('correct');
+        if (state.mistakesHere === 0) state.firstTry++;
+        cont.querySelectorAll('.opt').forEach(o => { if (!o.classList.contains('correct')) o.classList.add('disabled'); });
+        $(correctionId).className = 'correction-box';
+        updateHUD();
+        const nxt = document.createElement('button');
+        nxt.className = 'btn btn-next';
+        nxt.innerHTML = state.phase === 'learn'
+          ? (state.idx < sections.length - 1 ? 'الشطر التالي ⬅️' : 'انتقل إلى الاختبار 🧪')
+          : (state.idx < quiz.length - 1 ? 'السؤال التالي ⬅️' : 'عرض النتيجة 🏆');
+        nxt.onclick = () => { sfx('click'); onDone(); };
+        $(nextId).appendChild(nxt);
+      } else {
+        btn.classList.add('wrong', 'disabled');
+        btn.querySelector('.bullet').textContent = '!';
+        sfx('wrong');
+        state.aware++;
+        state.mistakesHere++;
+        const cb = $(correctionId);
+        cb.className = 'correction-box show';
+        cb.innerHTML = `${item.f}<br><span class="aware-pop">💡 +١ نقطة وعي .. جرّب الخيار الآخر</span>`;
+        updateHUD();
+      }
+    };
+    cont.appendChild(btn);
+  });
+}
+
+function renderLearn() {
+  updateHUD();
+  const s = sections[state.idx];
+  $('learn-tag').textContent = `الشطر ${arNum(state.idx+1)} • الآيات ${s.range}`;
+  $('learn-opener').textContent = s.opener;
+  $('learn-text').innerHTML = s.text;
+  $('quran-box').classList.remove('open');
+  $('btn-toggle').innerHTML = '🔍 اضغط لقراءة الشطر كاملاً (للحفظ)';
+
+  const opts = shuffle([
+    { t: s.correct, ok: true },
+    ...s.distractors.map(d => ({ t: d.t, f: d.f, ok: false }))
+  ]);
+  buildOptions('learn-options', opts, 'learn-correction', 'learn-next', () => {
+    state.idx++;
+    if (state.idx < sections.length) renderLearn();
+    else { state.phase = 'quiz'; state.idx = 0; switchScreen('screen-quiz'); renderQuiz(); }
+  });
+}
+
+function renderQuiz() {
+  updateHUD();
+  const q = quiz[state.idx];
+  $('quiz-tag').textContent = `السؤال ${arNum(state.idx+1)} / ٥`;
+  $('quiz-q').innerHTML = `« ${q.q} »`;
+  const opts = shuffle(q.opts.map(o => ({ ...o })));
+  buildOptions('quiz-options', opts, 'quiz-correction', 'quiz-next', () => {
+    state.idx++;
+    if (state.idx < quiz.length) renderQuiz();
+    else showEnd();
+  });
+}
+
+function showEnd() {
+  sfx('win');
+  $('progress').style.width = '100%';
+  $('hud').classList.add('hidden');
+  switchScreen('screen-end');
+  $('stat-first').textContent = arNum(state.firstTry);
+  $('stat-aware').textContent = arNum(state.aware);
+
+  let rank, msg;
+  if (state.firstTry >= 9) {
+    rank = '🌟 متدبّرٌ بصير';
+    msg = 'أصبتَ المعاني من أول نظرة، وربطتَ بين الأشطر بثبات. جعل الله القرآن ربيع قلبك 🌿';
+  } else if (state.firstTry >= 5) {
+    rank = '💡 صاحب وعيٍ ثاقب';
+    msg = 'تنقّلتَ بين التصحيح والصواب بجمال.. وكلّ «نقطة وعي» حفرتْ لك معنىً لا يُنسى ✨';
+  } else {
+    rank = '🌱 طالبٌ مبارك الرحلة';
+    msg = ' more than once توقّفتَ، تصحّحتَ، ثم وصلتَ.. وهذا هو التعلّم الحقيقي. ختمتَ السورة كاملة والحمد لله 🤲';
+  }
+  if (state.aware > 6) msg += ' <br><b>كثرة تصحيحاتك دليل أنك كنت تقرأ بعقلٍ يسأل، لا بحفظٍ يمرّ 💛</b>';
+  $('end-rank').textContent = rank;
+  $('end-msg').innerHTML = msg;
+}
+
+function resetGame() { initAudio(); sfx('click'); startGame(); }
+
+/* ---------- Modal السورة كاملة ---------- */
+function openSurah() {
+  initAudio(); sfx('click');
+  const c = $('surah-full-content');
+  if (!c.dataset.ready) {
+    c.innerHTML = sections.map((s,i) => `
+      <div class="surah-part">
+        <h3>الشطر ${arNum(i+1)} • الآيات ${s.range}</h3>
+        <div class="quran-text">${s.text}</div>
+      </div>`).join('');
+    c.dataset.ready = '1';
+  }
+  $('modal-surah').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSurah() {
+  sfx('click');
+  $('modal-surah').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSurah(); });
+
+</script>
+</body>
+</html>
